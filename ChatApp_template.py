@@ -17,7 +17,6 @@ parser.add_argument('-f', '--firstname', help='First name', type=str, default=''
 parser.add_argument('-l', '--lastname', help='Last name', type=str, default='')
 
 args = parser.parse_args()
-
 ###
 
 import rticonnextdds_connector as rti
