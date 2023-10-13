@@ -28,13 +28,13 @@ def handle_client(client_socket, client_address):
             connected = False
         print(f'Received data from {client_address}: {dataReceived.decode()}')
         
+        # reply to the client
         dataSent = f'Received data: {dataReceived}'
         client_socket.send(dataSent.encode(FORMAT))
-    client_socket.close()
-
+        
     # Close the client socket
     client_socket.close()
-    print(f'Connection from {client_address} closed, msg: {data}')
+    print(f'Connection from {client_address} closed, msg: {dataReceived}')
 
 # Main loop to accept incoming connections and spawn new threads to handle them
 while True:
