@@ -10,7 +10,7 @@ ADDR = (IP, PORT)
 SIZE = 256
 FORMAT = "utf-8"
 IDlist = []
-SESSION_TIME = '59'
+SESSION_TIME = '25'
 finish_thread = False
 
 # Define a function to handle commands sending

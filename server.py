@@ -1,6 +1,7 @@
 import socket
 import threading
 import time
+from threading import *
 
 # Define the server's IP address and port
 IP = '127.0.0.1'
@@ -12,7 +13,8 @@ FORMAT = "utf-8"
 IDlist = []
 SOClist = []
 ACTIVE = []
-SESSION_TIME = '60'
+SESSION_TIME = '30'
+l=RLock()
 
 # Function to send updated list to all users
 def All():
@@ -31,17 +33,21 @@ def timer():
             
             # Remove the inactive users
             print(f'{SESSION_TIME} seconds passed')
+            l.acquire()
             inactive = set(IDlist) - set(ACTIVE)
             inactive = list(inactive)
+            l.release()
             print(f'Inactive users: {inactive}')
             
+            l.acquire()
             for user in inactive:
                 
                 indexInactive=IDlist.index(user)
                 SOCinactive = SOClist[indexInactive]
                 SOCinactive.close() 
             seconds = time.time()
-            ACTIVE.clear()  
+            ACTIVE.clear()
+            l.release()  
         else:
             pass
 
@@ -71,13 +77,16 @@ def Rec(client_socket, client_address):
         
         # Check if user removed by the timer or not
         try:
+            l.acquire()
             dataReceived = client_socket.recv(SIZE).decode(FORMAT)
-            
+            l.release()
         except:
+            l.acquire()
             IDlist.remove(ID.rstrip())
             SOClist.remove(client_socket)
             print(f'user {ID} is inactive thus disconnected')
             All()
+            l.release()
             return
         
         # The commands for the user
@@ -89,7 +98,11 @@ def Rec(client_socket, client_address):
             client_socket.send((str(IDlist)).encode(FORMAT))
             
         elif dataReceived == 'Alive':
+            l.acquire()
+            global ACTIVE
             ACTIVE.append(ID)
+            ACTIVE = list( dict.fromkeys(ACTIVE) )
+            l.release()
             
         else:
             # Cutted message to IDs and message
@@ -115,10 +128,12 @@ def Rec(client_socket, client_address):
         print(f'Received data from {client_address}: {dataReceived}')
         
     # Close the client socket and remove user from lists
+    l.acquire()
     client_socket.close()
     IDlist.remove(ID.rstrip())
     SOClist.remove(client_socket)
     All()
+    l.release()
 
 
 def main():
