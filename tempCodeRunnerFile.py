@@ -1,0 +1,1 @@
+client_socket.send(pickle.dumps(IDlist))
