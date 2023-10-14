@@ -10,7 +10,7 @@ ADDR = (IP, PORT)
 SIZE = 256
 FORMAT = "utf-8"
 IDlist = []
-SESSION_TIME = '20'
+SESSION_TIME = '59'
 finish_thread = False
 
 # Define a function to handle commands sending
@@ -77,7 +77,6 @@ def alive():
         
         # checking the session time
         if time.time() - seconds > int(SESSION_TIME):
-            print('Refreshing connection')
             client_socket.send('Alive'.encode(FORMAT))
             seconds = time.time()
         else:
@@ -91,11 +90,10 @@ if __name__ == '__main__':
 
     # Connect to the server
     client_socket.connect(ADDR)
-    print(f'Trying to connect to the server at {IP}/{PORT}')
+    print(f'Connect to the server at {IP}/{PORT}')
 
     # Send connection signal and receive session time
     client_socket.send('Connect'.encode(FORMAT))
-    print("CONNECTED")
     
     timeInterval = client_socket.recv(SIZE).decode(FORMAT)
     print(f'the time interval for this connection to be active is {timeInterval} seconds')
@@ -109,8 +107,14 @@ if __name__ == '__main__':
     
     # send ID to the server
     client_socket.send(ID.encode(FORMAT))
+    '''
+    client_socket.send('List'.encode(FORMAT))
+    numOfClients = client_socket.recv(SIZE).decode(FORMAT)
+    if len(numOfClients) > 25:
+        exit()
+    
     client_socket.send('Alive'.encode(FORMAT))
-
+    '''
     # Create separate threads to send and receive data and the alive signal
     thread_send = threading.Thread(target = send)
     thread_send.start()

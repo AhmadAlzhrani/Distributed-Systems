@@ -12,7 +12,7 @@ FORMAT = "utf-8"
 IDlist = []
 SOClist = []
 ACTIVE = []
-SESSION_TIME = '30'
+SESSION_TIME = '60'
 
 # Function to send updated list to all users
 def All():
@@ -40,7 +40,8 @@ def timer():
                 indexInactive=IDlist.index(user)
                 SOCinactive = SOClist[indexInactive]
                 SOCinactive.close() 
-            seconds = time.time()  
+            seconds = time.time()
+            ACTIVE.clear()  
         else:
             pass
 
